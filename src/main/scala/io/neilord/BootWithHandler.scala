@@ -6,15 +6,12 @@ import scala.concurrent.Future
 import akka.http.model.HttpMethods._
 import akka.http.model._
 import akka.http._
-import reactivemongo.bson.BSONDocument
-import play.modules.reactivemongo.json.BSONFormats
-import play.api.libs.json.Json
 import scala.concurrent.ExecutionContext.Implicits.global
 import akka.stream.scaladsl.Flow
 
-object Boot extends App {
+object BootWithHandler extends App with BSONUtils {
+  //See http://doc.akka.io/docs/akka-stream-and-http-experimental/1.0-M2/scala/http/server.html
 
-  //Which actor system to use
   implicit val system = ActorSystem("Streams")
   implicit val materializer = FlowMaterializer()
 
@@ -51,15 +48,5 @@ object Boot extends App {
 
     case HttpRequest(_, _, _, _, _) => Future.successful(HttpResponse(status = StatusCodes.NotFound))
   }
-
-  //use the play json libraries to convert BSON to json
-  def convertToString(input: List[BSONDocument]) : String = {
-    input
-      .map(f => convertToString(f))
-      .mkString("[", ",", "]")
-  }
-
-  def convertToString(input: BSONDocument) : String = {
-    Json.stringify(BSONFormats.toJSON(input))
-  }
 }
+
