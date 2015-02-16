@@ -16,4 +16,4 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
  
 resolvers += "Typesafe" at "https://repo.typesafe.com/typesafe/releases/"
  
-mainClass in (Compile, run) := Some("io.neilord.BootWithFlow")
+//mainClass in (Compile, run) := Some("io.neilord.BootWithFlow")
