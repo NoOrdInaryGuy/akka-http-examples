@@ -2,6 +2,7 @@ package io.neilord
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.ws.UpgradeToWebsocket
 import akka.stream._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
