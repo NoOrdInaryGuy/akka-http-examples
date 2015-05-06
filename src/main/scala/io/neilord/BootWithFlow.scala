@@ -22,7 +22,7 @@ object BootWithFlow extends App with BSONUtils {
     connection =>
       println(s"Connection accepted from ${connection.remoteAddress}")
       //connection handleWith { broadcastZipFlow }
-      connection handleWith { broadcastMergeFlow }
+      connection handleWith { broadcastMergeFlow.via(mapStringToResponse) }
   }).run()
 
   //Some dummy steps that totally disregard the request, and return an entry of their choosing.
@@ -33,6 +33,10 @@ object BootWithFlow extends App with BSONUtils {
   val mapStringToResponse: Flow[String, HttpResponse, Unit] = Flow[String].map[HttpResponse](
     (in: String) => HttpResponse(status = StatusCodes.OK, entity = in)
   )
+
+  val mapStringToResponse2 = Flow[String].map[HttpResponse] {
+    (in: String) => HttpResponse(status = StatusCodes.OK, entity = in)
+  }
 
   //"To Many"
   val bCast3 = Broadcast[HttpRequest](3)
@@ -51,14 +55,12 @@ object BootWithFlow extends App with BSONUtils {
 
       val bcast = builder.add(bCast3)
       val merge = builder.add(merge3)
-      val merge1 = builder.add(Merge[HttpResponse](1))
 
-      //TODO: How do we structure this such that the extra merge1 is not needed?
       bcast ~> step1 ~> merge
-      bcast ~> step2 ~> merge ~> mapStringToResponse ~> merge1
+      bcast ~> step2 ~> merge
       bcast ~> step3 ~> merge
-
-      (bcast.in, merge1.out)
+      
+      (bcast.in, merge.out)
   }
 
   val broadcastZipFlow = Flow() {
