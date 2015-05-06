@@ -22,22 +22,10 @@ object BootWithFlow extends App with BSONUtils {
     connection =>
       println(s"Connection accepted from ${connection.remoteAddress}")
       //connection handleWith { broadcastZipFlow }
-      connection handleWith { broadcastMergeFlow.via(mapStringToResponse) }
+      connection handleWith { broadcastMergeFlow }
   }).run()
 
-  //Some dummy steps that totally disregard the request, and return an entry of their choosing.
-  val step1 = Flow[HttpRequest].mapAsync[String](1)(getTickerHandler("GOOG"))
-  val step2 = Flow[HttpRequest].mapAsync[String](1)(getTickerHandler("AAPL"))
-  val step3 = Flow[HttpRequest].mapAsync[String](1)(getTickerHandler("MSFT"))
-
-  val mapStringToResponse: Flow[String, HttpResponse, Unit] = Flow[String].map[HttpResponse](
-    (in: String) => HttpResponse(status = StatusCodes.OK, entity = in)
-  )
-
-  val mapStringToResponse2 = Flow[String].map[HttpResponse] {
-    (in: String) => HttpResponse(status = StatusCodes.OK, entity = in)
-  }
-
+  //Junctions
   //"To Many"
   val bCast3 = Broadcast[HttpRequest](3)
 
@@ -49,24 +37,37 @@ object BootWithFlow extends App with BSONUtils {
     (inp1, inp2, inp3) => new HttpResponse(status = StatusCodes.OK, entity = inp1 + inp2 + inp3)
   }
 
+  val stringToHttpResponse: Flow[String, HttpResponse, Unit] = Flow[String].map[HttpResponse](
+    (in: String) => HttpResponse(status = StatusCodes.OK, entity = in)
+  )
+
+  //Some dummy steps that totally disregard the request, and return an entry of their choosing.
+  val step1 = Flow[HttpRequest].mapAsync[String](1)(getTickerHandler("GOOG"))
+  val step2 = Flow[HttpRequest].mapAsync[String](1)(getTickerHandler("AAPL"))
+  val step3 = Flow[HttpRequest].mapAsync[String](1)(getTickerHandler("MSFT"))
+
+  //There's a faked delay in step1-3, so you don't know which one you will get, it's realistic.
   val broadcastMergeFlow = Flow() {
     implicit builder =>
       import FlowGraph.Implicits._
 
+      //Input -> Splitter -> [ Actions ] -> Merge (take first policy) -> Create an HttpResponse -> Output
       val bcast = builder.add(bCast3)
       val merge = builder.add(merge3)
+      val stringToHttpResponseMapper = builder.add(stringToHttpResponse)
 
       bcast ~> step1 ~> merge
-      bcast ~> step2 ~> merge
+      bcast ~> step2 ~> merge ~> stringToHttpResponseMapper
       bcast ~> step3 ~> merge
-      
-      (bcast.in, merge.out)
+
+      (bcast.in, stringToHttpResponseMapper.outlet)
   }
 
   val broadcastZipFlow = Flow() {
     implicit builder =>
       import FlowGraph.Implicits._
 
+      //Input -> Splitter -> [ Actions ] -> Zip (combine all policy, ours makes an HttpResponse) -> Output
       val bcast = builder.add(bCast3)
       val zip = builder.add(zip3)
 
@@ -76,27 +77,6 @@ object BootWithFlow extends App with BSONUtils {
 
       (bcast.in, zip.out)
   }
-
-// OLD format:
-//
-// //There's a faked delay in step1-3, so you don't know which one you will get, it's realistic.
-//  val broadCastMergeFlow = Flow[HttpRequest, HttpResponse]() {
-//    implicit builder =>
-//      //Input -> Splitter -> [ Actions ] -> Merge (take first policy) -> Create an HttpResponse -> Output
-//            bCast ~> step1 ~> merge
-//      in ~> bCast ~> step2 ~> merge ~> mapStringToResponse ~> out
-//            bCast ~> step3 ~> merge
-//      (in, out)
-//  }
-//
-//  val broadCastZipFlow = Flow[HttpRequest, HttpResponse]() {
-//    implicit builder =>
-//      //Input -> Splitter -> [ Actions ] -> Zip (combine all policy, ours makes an HttpResponse) -> Output
-//            bCast ~> step1 ~> zip.input1
-//      in ~> bCast ~> step2 ~> zip.input2 ~> out
-//            bCast ~> step3 ~> zip.input3
-//      (in, out)
-//  }
 
   def getTickerHandler(tickName: String)(request: HttpRequest): Future[String] = {
     // query the database
