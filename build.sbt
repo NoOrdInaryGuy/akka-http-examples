@@ -1,8 +1,8 @@
 name := "http-akka"
  
-version := "1.0"
+version := "1.1"
  
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.6"
  
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.3.10",
