@@ -2,7 +2,11 @@
 Experimentation with Akka HTTP and ReactiveMongo
 
 * akka-http and streams isn't yet fully documented with examples.
-* This repository has examples of processing HTTP requests with handlers and Flows on the server side. It also has examples of using the HTTP client API to exercise the server side.
+* This repository has examples of:
+	1. Processing HTTP requests with handlers: ```BootWithHandler```
+	2. Processing HTTP requests with Flows: ```BootWithFlow```
+	3. Akka's Routing DSL: ```BootWithRouting```
+	4. Using the HTTP client API to exercise the server side: ```Client```
 * The version in master is based on akka-http 1.0-RC2 - see other branch for akka-http 1.0-M2 level example.
 
 ### Setup
