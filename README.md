@@ -18,3 +18,4 @@ Experimentation with Akka HTTP, Streams, and ReactiveMongo
 * See also: http://www.smartjava.org/content/building-rest-service-scala-akka-http-akka-streams-and-reactive-mongo
  (examples for the 1.0-M2 release that inspired this repo). 
 * See also: http://doc.akka.io/docs/akka-stream-and-http-experimental/1.0-RC2/scala/http/server.html
+* Use http://www.websocket.org/echo.html for WebSocket experimentation.
