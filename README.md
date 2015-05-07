@@ -1,4 +1,4 @@
-# akka-http-reactive-mongo
+# akka-http-examples
 Experimentation with Akka HTTP and ReactiveMongo
 
 * akka-http and streams isn't yet fully documented with examples.
