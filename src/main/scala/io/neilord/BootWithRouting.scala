@@ -21,16 +21,17 @@ object BootWithRouting extends App {
   val serverSource: Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
     Http(system).bind(interface = host, port = port)
 
+  val route: Route =
+    path("") {
+      get {
+        complete(HttpResponse(entity = "Hello world?"))
+      }
+    }
+
   serverSource.to(Sink.foreach {
     connection =>
       println("Accepted new connection from: " + connection.remoteAddress)
-      connection handleWith Route.handlerFlow {
-        path("") {
-          get {
-            complete(HttpResponse(entity = "Hello world?"))
-          }
-        }
-      }
+      connection handleWith Route.handlerFlow(route)
   }).run()
 
 }
