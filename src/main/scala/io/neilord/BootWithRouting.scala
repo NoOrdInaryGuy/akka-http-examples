@@ -10,9 +10,8 @@ import Directives._
 import scala.concurrent.Future
 
 object BootWithRouting extends App {
-
   val host = "127.0.0.1"
-  val port = 8080
+  val port = 8093
 
   implicit val system = ActorSystem("my-testing-system")
   implicit val fm = ActorFlowMaterializer()

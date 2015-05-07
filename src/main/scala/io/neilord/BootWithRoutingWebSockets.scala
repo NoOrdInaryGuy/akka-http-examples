@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 object BootWithRoutingWebSockets extends App {
   val host = "127.0.0.1"
-  val port = 8081
+  val port = 8094
 
   implicit val system = ActorSystem("my-testing-system")
   implicit val fm = ActorFlowMaterializer()
@@ -31,6 +31,7 @@ object BootWithRoutingWebSockets extends App {
   val route: Route =
     path("") {
       get {
+        //Handles WebSockets, falling back to normal complete if no upgrade.
         handleWebsocketMessages(echoMessageFlow) ~
         complete(HttpResponse(entity = "Hello non websockets world?"))
       }

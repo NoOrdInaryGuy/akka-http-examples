@@ -11,13 +11,15 @@ import scala.util.Random
 import akka.http.scaladsl.model._
 
 object BootWithFlow extends App with BSONUtils {
+  val host = "127.0.0.1"
+  val port = 8091
 
   implicit val system = ActorSystem("Streams")
   implicit val materializer = ActorFlowMaterializer()
 
   //Start the server
   val serverSource: Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
-    Http().bind(interface = "localhost", port = 8091)
+    Http().bind(interface = host, port = port)
 
   val bindingFuture: Future[Http.ServerBinding] = serverSource.to(Sink.foreach {
     connection =>

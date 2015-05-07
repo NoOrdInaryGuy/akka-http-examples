@@ -46,7 +46,7 @@ object Client extends App {
   }
 
   //5 requests for ticker GOOG, through requestDoublerFlow which doubles and concats them
-  val res = 1 to 5 map { _ =>
+  val res = 1 to 5 foreach { _ =>
     Source.single(HttpRequest(uri = Uri("/get?ticker=GOOG")))
       .to(requestDoublerFlow)
       .run()

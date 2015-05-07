@@ -11,14 +11,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 
 object BootWithHandler extends App with BSONUtils {
-  //See http://doc.akka.io/docs/akka-stream-and-http-experimental/1.0-RC2/scala/http/server.html
+  val host = "127.0.0.1"
+  val port = 8092
 
   implicit val system = ActorSystem("Streams")
   implicit val materializer = ActorFlowMaterializer()
 
   //Start the server
   val serverSource: Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
-    Http().bind(interface = "localhost", port = 8091)
+    Http().bind(interface = host, port = port)
 
   //Use:
   //a Flow[HttpRequest, HttpResponse] for handleWith,
