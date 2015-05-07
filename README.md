@@ -6,7 +6,8 @@ Experimentation with Akka HTTP and ReactiveMongo
 	1. Processing HTTP requests with handlers: ```BootWithHandler```
 	2. Processing HTTP requests with Flows: ```BootWithFlow```
 	3. Akka's Routing DSL: ```BootWithRouting```
-	4. Using the HTTP client API to exercise the server side: ```Client```
+	4. Akka's Routing DSL, to hook WebSockets up to Flows: ```BootWithRoutingWebSockets```
+	5. Using the HTTP client API to exercise the server side: ```Client``` 
 * The version in master is based on akka-http 1.0-RC2 - see other branch for akka-http 1.0-M2 level example.
 
 ### Setup
