@@ -8,7 +8,7 @@ Experimentation with Akka HTTP, Streams, and ReactiveMongo
 	3. Akka's Routing DSL: ```BootWithRouting```
 	4. Akka's Routing DSL, to hook WebSockets up to Flows: ```BootWithRoutingWebSockets```
 	5. Using the HTTP client API to exercise the server side: ```Client``` 
-* The version in master is based on akka-http 1.0-RC2 - see other branch for akka-http 1.0-M2 level example.
+* The version in master is based on akka-http 1.0-RC3 - see other branch for akka-http 1.0-M2 level example.
 
 ### Setup
 * ```cat data/stocks.json | mongoimport --db akka --collection stocks```
