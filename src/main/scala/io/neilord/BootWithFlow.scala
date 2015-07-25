@@ -2,7 +2,6 @@ package io.neilord
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.ws.UpgradeToWebsocket
 import akka.stream._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -15,7 +14,7 @@ object BootWithFlow extends App with BSONUtils {
   val port = 8091
 
   implicit val system = ActorSystem("Streams")
-  implicit val materializer = ActorFlowMaterializer()
+  implicit val materializer = ActorMaterializer()
 
   //Start the server
   val serverSource: Source[Http.IncomingConnection, Future[Http.ServerBinding]] =

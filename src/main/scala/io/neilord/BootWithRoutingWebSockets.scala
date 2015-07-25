@@ -1,13 +1,14 @@
 package io.neilord
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.ws.Message
-import akka.http.scaladsl.server._
 import akka.http.scaladsl._
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.http.scaladsl.model.HttpResponse
-import Directives._
+import akka.http.scaladsl.model.ws.Message
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server._
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.{Flow, Sink, Source}
+
 import scala.concurrent.Future
 
 object BootWithRoutingWebSockets extends App {
@@ -15,7 +16,7 @@ object BootWithRoutingWebSockets extends App {
   val port = 8094
 
   implicit val system = ActorSystem("my-testing-system")
-  implicit val fm = ActorFlowMaterializer()
+  implicit val fm = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
   val serverSource: Source[Http.IncomingConnection, Future[Http.ServerBinding]] =

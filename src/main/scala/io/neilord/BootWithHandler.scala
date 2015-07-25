@@ -2,12 +2,13 @@ package io.neilord
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.{Sink, Source, Flow}
-import scala.concurrent.Future
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model._
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.{Flow, Sink, Source}
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
 object BootWithHandler extends App with BSONUtils {
@@ -15,7 +16,7 @@ object BootWithHandler extends App with BSONUtils {
   val port = 8092
 
   implicit val system = ActorSystem("Streams")
-  implicit val materializer = ActorFlowMaterializer()
+  implicit val materializer = ActorMaterializer()
 
   //Start the server
   val serverSource: Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
