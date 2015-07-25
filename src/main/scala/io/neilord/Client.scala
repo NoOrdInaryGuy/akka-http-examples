@@ -1,18 +1,18 @@
 package io.neilord
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model._
 import akka.http.scaladsl.Http
-import akka.stream.scaladsl._
-import akka.stream.ActorFlowMaterializer
-import FlowGraph.Implicits._
+import akka.http.scaladsl.model._
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.FlowGraph.Implicits._
 import akka.stream.scaladsl._
 import akka.util.ByteString
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object Client extends App {
   implicit val system = ActorSystem("testsystem")
-  implicit val materializer = ActorFlowMaterializer()
+  implicit val materializer = ActorMaterializer()
 
   val httpClient = Http(system).outgoingConnection("localhost", 8091)
 
